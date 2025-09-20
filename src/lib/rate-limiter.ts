@@ -214,13 +214,16 @@ export async function applyRateLimit(
     
     return { allowed: true }
   } catch (error) {
-    errorLogger.logError('Rate limiting error', {
-      component: 'rate-limiter',
-      action: 'applyRateLimit',
-      additionalData: {
-        error: error instanceof Error ? error.message : 'Unknown error'
-      }
-    })
+        errorLogger.logError('Rate limiting error', {
+          component: 'rate-limiter',
+          action: 'applyRateLimit',
+          additionalData: {
+            error: error instanceof Error ? error.message : 'Unknown error'
+          },
+          timestamp: new Date().toISOString(),
+          userAgent: request.headers.get('user-agent') || 'server',
+          url: request.url || 'server'
+        })
     
     // On error, allow the request to proceed
     return { allowed: true }
